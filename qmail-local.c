@@ -69,11 +69,12 @@ char outbuf[1024];
 
 /* child process */
 
+int unlink(const char *tgt);
 char fntmptph[80 + FMT_ULONG * 2];
 char fnnewtph[80 + FMT_ULONG * 2];
 void tryunlinktmp() { unlink(fntmptph); }
 void sigalrm() { tryunlinktmp(); _exit(3); }
-
+int chdir(const char *dir);
 void maildir_child(dir)
 char *dir;
 {
@@ -88,7 +89,22 @@ char *dir;
  substdio ssout;
 
  sig_alarmcatch(sigalrm);
- if (chdir(dir) == -1) { if (error_temp(errno)) _exit(1); _exit(2); }
+ if (chdir(dir) == -1) {
+   if (errno==ENOENT){
+     dprintf(2,"ENOENT\n");
+     strcpy(buf,"mkdir -p ");
+     strcat(buf,dir);
+     strcat(buf,"/cur ");
+     strcat(buf,dir);
+     strcat(buf,"/tmp ");
+     strcat(buf,dir);
+     strcat(buf,"/new ");
+     system(buf);
+   };
+   if (error_temp(errno))
+     _exit(1);
+   _exit(2);
+ }
  pid = getpid();
  host[0] = 0;
  gethostname(host,sizeof(host));
