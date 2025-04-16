@@ -91,14 +91,8 @@ char *dir;
  sig_alarmcatch(sigalrm);
  if (chdir(dir) == -1) {
    if (errno==ENOENT){
-     dprintf(2,"ENOENT\n");
-     strcpy(buf,"mkdir -p ");
+     strcpy(buf,"maildirmake ");
      strcat(buf,dir);
-     strcat(buf,"/cur ");
-     strcat(buf,dir);
-     strcat(buf,"/tmp ");
-     strcat(buf,dir);
-     strcat(buf,"/new ");
      system(buf);
    };
    if (error_temp(errno))
