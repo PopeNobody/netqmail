@@ -10,25 +10,9 @@ int umask(int);
 unsigned long strlen(char *str);
 int d=0;
 int mkdir_p(char *dir, int mode);
-int _mkdir_p(char *dir, int mode);
-int mkdir_v(char *dir, int mode);
-//   int _mkdir_v(char *dir, int mode);
 
-//   int _mkdir_v(char *dir, int mode) {
-//     int res=mkdir(dir,mode);
-//     return res;
-//   };
-int mkdir_v(char *dir, int mode) {
-  dprintf(2,"%5d mkdir_v(%s,%o)\n", ++d, dir, mode);
-  int res=mkdir  (dir,mode);
-  char *fmt = res 
-    ? "%5d mkdir_v(%s,%o) => %d (%m)\n"
-    : "%5d mkdir_v(%s,%o) => %d\n";
-  dprintf(2,fmt,d--,dir,mode,res);
-  return res;
-};
-int _mkdir_p(char *dir, int mode) {
-  if(mkdir_v(dir,mode)==0)
+int mkdir_p(char *dir, int mode) {
+  if(mkdir(dir,mode)==0)
     return 0;
   if(errno==ENOENT) {
     unsigned long len=strlen(dir);
@@ -47,21 +31,10 @@ int _mkdir_p(char *dir, int mode) {
     *tmp=0;
     int res=mkdir_p(dir,mode);
     *tmp='/';
-    return mkdir_v(dir,mode);
-//     } else if ( errno==EEXIST ) {
-//       return 0;
+    return mkdir(dir,mode);
   } else {
     return -1;
   }
-};
-int mkdir_p(char *dir, int mode) {
-  dprintf(2,"%5d mkdir_p(%s,%o)\n", ++d, dir, mode);
-  int res=_mkdir_p(dir,mode);
-  char *fmt = res 
-    ? "%5d mkdir_p(%s,%o) => %d (%m)\n"
-    : "%5d mkdir_p(%s,%o) => %d\n";
-  dprintf(2,fmt,d--,dir,mode,res);
-  return res;
 };
 void main(argc,argv)
 int argc;

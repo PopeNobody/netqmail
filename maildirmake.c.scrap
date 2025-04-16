@@ -1,0 +1,22 @@
+#ifdef VERBOSE_AS_FUCK
+int mkdir_v(char *dir, int mode);
+int _mkdir_p(char *dir, int mode);
+int mkdir_v(char *dir, int mode) {
+  dprintf(2,"%5d mkdir_v(%s,%o)\n", ++d, dir, mode);
+  int res=mkdir  (dir,mode);
+  char *fmt = res 
+    ? "%5d mkdir_v(%s,%o) => %d (%m)\n"
+    : "%5d mkdir_v(%s,%o) => %d\n";
+  dprintf(2,fmt,d--,dir,mode,res);
+  return res;
+};
+int mkdir_p(char *dir, int mode) {
+  dprintf(2,"%5d mkdir_p(%s,%o)\n", ++d, dir, mode);
+  int res=_mkdir_p(dir,mode);
+  char *fmt = res 
+    ? "%5d mkdir_p(%s,%o) => %d (%m)\n"
+    : "%5d mkdir_p(%s,%o) => %d\n";
+  dprintf(2,fmt,d--,dir,mode,res);
+  return res;
+};
+#endif
